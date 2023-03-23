@@ -1,6 +1,7 @@
 
 # Sudoku-GUI-Solver
-This is a sudoku solver using the backtracking algorithm. It employs a graphical GUI as well as a text based version.
+
+Sudoku Solver application offers a comprehensive and user-friendly solution for solving a Sudoku puzzle using the powerful backtracking algorithm. With both a graphical and text-based interface, users can easily solve a sudoku puzzle with confidence
 
 Run GUI.py to play sudoku.
 
