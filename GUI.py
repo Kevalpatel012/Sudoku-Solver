@@ -3,8 +3,9 @@ import pygame
 import time
 pygame.font.init()
 
-
+# Class representing the Sudoku grid
 class Grid:
+    # Initial Sudoku board configuration
     board = [
         [7, 8, 0, 4, 0, 0, 1, 2, 0],
         [6, 0, 0, 0, 7, 5, 0, 0, 9],
@@ -28,9 +29,11 @@ class Grid:
         self.selected = None
         self.win = win
 
+    # Update the internal model with the current cube values
     def update_model(self):
         self.model = [[self.cubes[i][j].value for j in range(self.cols)] for i in range(self.rows)]
 
+    # Place a value in a selected cube
     def place(self, val):
         row, col = self.selected
         if self.cubes[row][col].value == 0:
@@ -45,10 +48,12 @@ class Grid:
                 self.update_model()
                 return False
 
+    # Sketch a temporary value in a selected cube
     def sketch(self, val):
         row, col = self.selected
         self.cubes[row][col].set_temp(val)
 
+    # Draw the Sudoku grid
     def draw(self):
         # Draw Grid Lines
         gap = self.width / 9
@@ -65,8 +70,9 @@ class Grid:
             for j in range(self.cols):
                 self.cubes[i][j].draw(self.win)
 
+    # Select a cube at a given position
     def select(self, row, col):
-        # Reset all other
+        # Reset all other selected cubes
         for i in range(self.rows):
             for j in range(self.cols):
                 self.cubes[i][j].selected = False
@@ -74,11 +80,13 @@ class Grid:
         self.cubes[row][col].selected = True
         self.selected = (row, col)
 
+    # Clear the value in the selected cube
     def clear(self):
         row, col = self.selected
         if self.cubes[row][col].value == 0:
             self.cubes[row][col].set_temp(0)
 
+    # Handle click event and return the clicked position
     def click(self, pos):
         """
         :param: pos
@@ -92,6 +100,7 @@ class Grid:
         else:
             return None
 
+    # Check if the Sudoku grid is finished
     def is_finished(self):
         for i in range(self.rows):
             for j in range(self.cols):
@@ -99,6 +108,7 @@ class Grid:
                     return False
         return True
 
+    # Solve the Sudoku grid
     def solve(self):
         find = find_empty(self.model)
         if not find:
@@ -117,6 +127,7 @@ class Grid:
 
         return False
 
+    # Solve the Sudoku grid and update the GUI
     def solve_gui(self):
         self.update_model()
         find = find_empty(self.model)
@@ -146,7 +157,7 @@ class Grid:
 
         return False
 
-
+# Class representing a single cube in the Sudoku grid
 class Cube:
     rows = 9
     cols = 9
@@ -160,6 +171,7 @@ class Cube:
         self.height = height
         self.selected = False
 
+    # Draw the cube on the grid
     def draw(self, win):
         fnt = pygame.font.SysFont("comicsans", 40)
 
@@ -177,6 +189,7 @@ class Cube:
         if self.selected:
             pygame.draw.rect(win, (255,0,0), (x,y, gap ,gap), 3)
 
+    # Draw the cube with a change in value (green for valid, red for invalid)
     def draw_change(self, win, g=True):
         fnt = pygame.font.SysFont("comicsans", 40)
 
@@ -193,13 +206,15 @@ class Cube:
         else:
             pygame.draw.rect(win, (255, 0, 0), (x, y, gap, gap), 3)
 
+    # Set the value of the cube
     def set(self, val):
         self.value = val
 
+    # Set the temporary value of the cube
     def set_temp(self, val):
         self.temp = val
 
-
+# Find an empty position in the Sudoku grid
 def find_empty(bo):
     for i in range(len(bo)):
         for j in range(len(bo[0])):
@@ -208,7 +223,7 @@ def find_empty(bo):
 
     return None
 
-
+# Check if a value is valid in a specific position in the Sudoku grid
 def valid(bo, num, pos):
     # Check row
     for i in range(len(bo[0])):
@@ -231,7 +246,7 @@ def valid(bo, num, pos):
 
     return True
 
-
+# Redraw the window with the updated grid, time, and strikes
 def redraw_window(win, board, time, strikes):
     win.fill((255,255,255))
     # Draw time
@@ -244,7 +259,7 @@ def redraw_window(win, board, time, strikes):
     # Draw grid and board
     board.draw()
 
-
+# Format the time in the format "MM:SS"
 def format_time(secs):
     sec = secs%60
     minute = secs//60
@@ -255,7 +270,7 @@ def format_time(secs):
         mat = " " + str(minute) + ":" + str(sec)    
     return mat
 
-
+# Main function to run the game
 def main():
     win = pygame.display.set_mode((540,600))
     pygame.display.set_caption("Sudoku")
@@ -344,6 +359,8 @@ def main():
         if strikes == 3:
             board.solve_gui()
 
-
+# Call the main function to start the game
 main()
+
+# Quit the pygame window
 pygame.quit()
